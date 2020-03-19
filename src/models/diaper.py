@@ -6,7 +6,7 @@ class Diaper:
         self.__urlImage = urlImage
 
     def __str__(self):
-        return f'{self.__name} - {self.__price} - {self.__urlImage} '
+        return f'{self.__name} - {self.__price} - {self.__urlImage} '.encode('utf-8').strip()
 
     @property
     def name(self):

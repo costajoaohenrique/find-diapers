@@ -13,7 +13,7 @@ def todos_produtos_foram_carregados(texto_total_produtos):
 
 
 option = Options()
-option.headless = False
+option.headless = True
 driver = webdriver.Firefox(options=option)
 driver.get("https://www.clubeextra.com.br/secoes/C2475/fraldas?qt=12&ftr=facetSubShelf_ss:2475_Fraldas&p=0&gt=list")
 driver.implicitly_wait(20)  # in seconds
