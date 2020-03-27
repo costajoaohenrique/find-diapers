@@ -1,49 +1,56 @@
 import time
 from bs4 import BeautifulSoup
 from src.config.selenium_driver import SeleniumDriver
-from src.models.diaper import Diaper
 from src.finders.finder import Finder
+from src.domain.diaper import Diaper
 
 
 class FinderExtra(Finder):
-
     URL = "https://www.clubeextra.com.br/secoes/C2475/fraldas?qt=12&ftr=facetSubShelf_ss:2475_Fraldas&p=0&gt=list"
+    STORE = "Extra"
 
-    def __init__(self, driver: SeleniumDriver):
-        self._driver = driver.obter_driver(FinderExtra.URL)
+    def __init__(self, selenium_driver: SeleniumDriver):
+        self._driver = selenium_driver.obter_driver(FinderExtra.URL)
 
     def find(self):
+        print("Iniciando scrapping de fraldas do extra")
         driver = self._driver
-        self.scrollar_pagina_para_carregar_produtos(driver)
+        self._scrollar_pagina_para_carregar_produtos()
         html_content = driver.page_source
         soup = BeautifulSoup(html_content, 'html.parser')
-        self.obter_info_produtos(soup)
         driver.quit()
+        return self._obter_info_produtos(soup)
 
-    def obter_info_produtos(self, soup)-> list:
+    def _obter_info_produtos(self, soup):
+        print("Obtendo informação das Fraldas no HTML")
         divs = soup.findAll('div', {"class": "container-card"})
         lista = list()
         for card in divs:
+            sku = card.find_parent('div', {"class": "panel-product"}).find('div', {"class": "sku"})
             name = card.find('p', {"class": "product-description"})
             price = card.find('p', {"class": "normal-price"})
-            price = price if price != None else card.find(
+            price = price if price is not None else card.find(
                 'p', {"class": "discount-price"})
             image = card.find('img')
-            if (image != None and name != None and price != None):
-                diaper = Diaper(name.get_text(),price.get_text(), image.get('src'))
+            if image is not None and name is not None and price is not None:
+                diaper = Diaper(sku.get_text(), name.get_text(), price.get_text(), image.get('src'), FinderExtra.STORE)
                 lista.append(diaper)
         return lista
 
-    def scrollar_pagina_para_carregar_produtos(self, driver):
-        texto_total_produtos = driver.find_element_by_class_name(
-            "filter,ng-binding,ng-scope").text
-        while not self.todos_produtos_foram_carregados(texto_total_produtos):
-            driver.execute_script("window.scrollBy(0,1000)")
-            texto_total_produtos = driver.find_element_by_class_name(
-                "filter,ng-binding,ng-scope").text
-        time.sleep(20)
+    def _scrollar_pagina_para_carregar_produtos(self):
+        print("Scrollando pagina até carregar todas as fraldas")
+        texto_total_produtos = self._obter_texto_total_produtos()
+        while not self._todos_produtos_foram_carregados(texto_total_produtos):
+            self._driver.execute_script("window.scrollBy(0,1000)")
+            texto_total_produtos = self._obter_texto_total_produtos()
+        time.sleep(10)
 
-    def todos_produtos_foram_carregados(self, texto_total_produtos):
+    def _obter_texto_total_produtos(self):
+        return self._driver.find_element_by_class_name(
+            "filter,ng-binding,ng-scope").text
+
+    def _todos_produtos_foram_carregados(self, texto_total_produtos):
         qtd_carregado = int(texto_total_produtos.split()[1])
         qtd_total = int(texto_total_produtos.split()[3])
+        print(f"Quantidade carregado {qtd_carregado} de {qtd_total}")
         return True if qtd_carregado == qtd_total else False
