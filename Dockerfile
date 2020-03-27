@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
-ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
+ENV LANG C.UTF-8
 
 USER root
 RUN apt-get -qqy update
@@ -23,4 +23,4 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckod
 
 COPY . .
 RUN pip3 install --no-cache-dir -r requirements.txt
-CMD [ "python3", "./src/find_diapers.py" ]
+CMD [ "python3", "-m", "src.find_diapers" ]
