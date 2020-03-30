@@ -10,9 +10,9 @@ class FindDiapers:
     def _find_all(self):
         finders = FinderFactory.get_finders()
         for finder in finders:
-            self._list_diapers.append(finder.find())
-
-        print(self._list_diapers)
+            self._list_diapers.extend(finder.find())
+        dicts = [vars(diaper) for diaper in self._list_diapers]
+        print(dicts)
 
 
 if __name__ == "__main__":

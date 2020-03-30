@@ -33,7 +33,12 @@ class FinderExtra(Finder):
                 'p', {"class": "discount-price"})
             image = card.find('img')
             if image is not None and name is not None and price is not None:
-                diaper = Diaper(sku.get_text(), name.get_text(), price.get_text(), image.get('src'), FinderExtra.STORE)
+                diaper = Diaper(
+                    sku.get_text(),
+                    name.get_text().strip(),
+                    price.get_text(),
+                    image.get('src'),
+                    FinderExtra.STORE)
                 lista.append(diaper)
         return lista
 
