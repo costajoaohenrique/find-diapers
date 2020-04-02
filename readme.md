@@ -1,4 +1,5 @@
 docker run -d --network fd-network --name fd-mongo \
+    -p 27017:27017 \
     -e MONGO_INITDB_ROOT_USERNAME="find_diapers" \
     -e MONGO_INITDB_ROOT_PASSWORD="find_diapers"  \
     mongo

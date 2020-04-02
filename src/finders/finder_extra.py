@@ -1,8 +1,12 @@
 import time
+from datetime import date
+
 from bs4 import BeautifulSoup
+
 from src.config.selenium_driver import SeleniumDriver
-from src.finders.finder import Finder
 from src.domain.diaper import Diaper
+from src.domain.price import Price
+from src.finders.finder import Finder
 
 
 class FinderExtra(Finder):
@@ -34,11 +38,11 @@ class FinderExtra(Finder):
             image = card.find('img')
             if image is not None and name is not None and price is not None:
                 diaper = Diaper(
-                    sku.get_text(),
+                    int(sku.get_text()),
                     name.get_text().strip(),
-                    price.get_text(),
                     image.get('src'),
                     FinderExtra.STORE)
+                diaper.add_price(Price(self._retirar_formatacao_moeda(price.get_text()), date.today()))
                 lista.append(diaper)
         return lista
 
@@ -59,3 +63,7 @@ class FinderExtra(Finder):
         qtd_total = int(texto_total_produtos.split()[3])
         print(f"Quantidade carregado {qtd_carregado} de {qtd_total}")
         return True if qtd_carregado == qtd_total else False
+
+    def _retirar_formatacao_moeda(self, price_text: str):
+        return price_text.split()[1].replace(",", ".")
+
