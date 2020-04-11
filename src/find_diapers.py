@@ -26,13 +26,15 @@ class FindDiapers:
 
 
 def run():
+    print("Iniciando Worker do Find Diapers")
     find_diapers = FindDiapers()
     find_diapers.find_all()
     find_diapers.save_all()
 
 
 if __name__ == "__main__":
-    schedule.every(1).minutes.do(run)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # schedule.every(1).minutes.do(run)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+    run()
