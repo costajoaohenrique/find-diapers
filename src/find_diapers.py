@@ -11,11 +11,16 @@ class FindDiapers:
         self._repository = DiaperRepository()
 
     def find_all(self):
+        print("Iniciando Busca de Diapers")
+        print("Obtendo Finders....")
         finders = FinderFactory.get_finders()
+        print(f"Encontrado {len(finders)} Finders")
         for finder in finders:
             self._list_diapers.extend(finder.find())
 
     def save_all(self):
+        print(f"Obtidos {len(self._list_diapers)} Diapers")
+        print("Gravando Diapers")
         for diaper in self._list_diapers:
             diaper_found = self._repository.find_by_sku(diaper.sku)
             new_price = diaper.prices[0]

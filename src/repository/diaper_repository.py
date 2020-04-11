@@ -5,10 +5,9 @@ from src.domain.diaper import Diaper
 
 
 class DiaperRepository:
-    CONNECTION = f"mongodb://{Config.DB_USER_NAME}:{Config.DB_USER_PASSWORD}@{Config.DB_SERVER}/?authSource=admin"
 
     def __init__(self):
-        mongo_client = MongoClient(DiaperRepository.CONNECTION)
+        mongo_client = MongoClient(Config.DB_URI)
         db = mongo_client[Config.DB_NAME]
         self._collection = db["diapers"]
 
